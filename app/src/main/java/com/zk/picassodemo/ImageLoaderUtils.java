@@ -63,6 +63,10 @@ public class ImageLoaderUtils {
         iconPicasso.invalidate(url);
     }
 
+    public static void invalidateImage(@NonNull String url) {
+        imagePicasso.invalidate(url);
+    }
+
 
     /**
      * 加载圆头像
@@ -87,19 +91,23 @@ public class ImageLoaderUtils {
 
 
     public static void loadCircleIcon(String url, ImageView imageView, boolean cache) {
-        loadIcon(url, imageView, res_id_icon_placeloader, res_id_icon_placeloader, cache, true, 0, null);
+        loadIcon(url, imageView, res_id_icon_placeloader, res_id_icon_placeloader, cache, true, 0, null, false);
     }
 
     public static void loadIcon(String url, ImageView imageView, boolean cache, int radius, ImageLoader.CornerType cornerType) {
-        loadIcon(url, imageView, res_id_icon_placeloader, res_id_icon_placeloader, cache, false, radius, cornerType);
+        loadIcon(url, imageView, res_id_icon_placeloader, res_id_icon_placeloader, cache, false, radius, cornerType, false);
     }
 
     public static void loadNormalImage(String url, ImageView imageView) {
         loadNormalImage(url, imageView, res_id_normal_placeloader, res_id_normal_placeloader);
     }
 
+    public static void loadNormalImage(String url, ImageView imageView, boolean cache) {
+        loadImage(url, imageView, res_id_normal_placeloader, res_id_normal_placeloader, cache, 0, null, false, null);
+    }
+
     public static void loadNormalImage(String url, ImageView imageView, @DrawableRes int placeLoaderResId, @DrawableRes int errorResId) {
-        loadImage(url, imageView, placeLoaderResId, errorResId, true, 0, null, null);
+        loadImage(url, imageView, placeLoaderResId, errorResId, true, 0, null, false, null);
     }
 
 
@@ -107,42 +115,51 @@ public class ImageLoaderUtils {
      * @param onLoadCallBack 不要使用匿名内部类，因为内部使用弱引用很大可能会被回收掉
      */
     public static void loadNormalImage(String url, ImageView imageView, LoadCallBack onLoadCallBack) {
-        loadImage(url, imageView, res_id_normal_placeloader, res_id_normal_placeloader, true, 0, null, onLoadCallBack);
+        loadImage(url, imageView, res_id_normal_placeloader, res_id_normal_placeloader, true, 0, null, false, onLoadCallBack);
     }
 
     public static void loadNormalImage(String url, Target target) {
-        loadImage(url, target, true, 0, null);
+        loadImage(url, target, true, 0, null, false);
     }
 
 
     public static void loadNormalImage(String url, ImageView imageView, @DrawableRes int placeLoaderResId, @DrawableRes int errorResId,
                                        LoadCallBack onLoadCallBack) {
-        loadImage(url, imageView, placeLoaderResId, errorResId, true, 0, null, onLoadCallBack, new Transformation[0]);
+        loadImage(url, imageView, placeLoaderResId, errorResId, true, 0, null, false, onLoadCallBack, new Transformation[0]);
     }
 
     public static void loadRoundCornerImage(String url, ImageView loadTarget, int cornerRadius, ImageLoader.CornerType cornerType) {
         loadImage(url, loadTarget, res_id_normal_placeloader, res_id_normal_placeloader, true, cornerRadius,
-                cornerType, null);
+                cornerType, false, null);
     }
 
     public static void loadRoundCornerImage(String url, ImageView imageView, @DrawableRes int placeLoaderResId, @DrawableRes int
             errorResId, int cornerRadius, ImageLoader.CornerType cornerType, LoadCallBack onLoadCallBack) {
-        loadImage(url, imageView, placeLoaderResId, errorResId, true, cornerRadius, cornerType, onLoadCallBack, new Transformation[0]);
+        loadImage(url, imageView, placeLoaderResId, errorResId, true, cornerRadius, cornerType, false, onLoadCallBack, new
+                Transformation[0]);
     }
 
     public static void loadRoundCornerImage(String url, ImageView imageView, @DrawableRes int placeLoaderResId, @DrawableRes int
             errorResId, int cornerRadius, ImageLoader.CornerType cornerType) {
-        loadImage(url, imageView, placeLoaderResId, errorResId, true, cornerRadius, cornerType, null);
+        loadImage(url, imageView, placeLoaderResId, errorResId, true, cornerRadius, cornerType, false, null);
     }
 
 
     public static void loadRoundCornerImage(String url, int cornerRadius, ImageLoader.CornerType cornerType, Target loadTarget) {
-        loadImage(url, loadTarget, true, cornerRadius, cornerType, new Transformation[0]);
+        loadImage(url, loadTarget, true, cornerRadius, cornerType, false, new Transformation[0]);
+    }
+
+    public static void updateCircleIcon(String url, ImageView imageView) {
+        loadIcon(url, imageView, res_id_icon_placeloader, res_id_icon_placeloader, true, true, 0, null, true);
+    }
+
+    public static void updateNormalImage(String url, ImageView imageView) {
+        loadImage(url, imageView, res_id_normal_placeloader, res_id_normal_placeloader, true, 0, null, true, null);
     }
 
 
     public static void loadIcon(String url, ImageView imageView, @DrawableRes int placeLoaderResId, @DrawableRes int errorResId, boolean
-            cache, boolean circle, int radius, ImageLoader.CornerType cornerType) {
+            cache, boolean circle, int radius, ImageLoader.CornerType cornerType, boolean updateImg) {
         new ImageLoader.Builder(iconPicasso, url, imageView)
                 .setBooleanIndicatorsEnabled(isDebug)
                 .setBooleanLoggingEnabled(isDebug)
@@ -151,6 +168,7 @@ public class ImageLoaderUtils {
                 .setBooleanCache(cache)
                 .setPlaceloaderId(placeLoaderResId)
                 .setErrResId(errorResId)
+                .setBooleanUpdateImg(updateImg)
                 .setBooleanFit(true)
                 .setBooleanCenterCrop(true)
                 .build();
@@ -168,7 +186,7 @@ public class ImageLoaderUtils {
      * @param transformations
      */
     public static void loadImage(String url, ImageView imageView, @DrawableRes int placeLoaderResId, @DrawableRes int errorResId,
-                                 boolean cache, int cornerRadius, ImageLoader.CornerType cornerType, LoadCallBack
+                                 boolean cache, int cornerRadius, ImageLoader.CornerType cornerType, boolean updateImg, LoadCallBack
                                          onLoadCallBack, Transformation... transformations) {
         new ImageLoader.Builder(imagePicasso, url, imageView)
                 .setBooleanIndicatorsEnabled(isDebug)
@@ -178,10 +196,11 @@ public class ImageLoaderUtils {
                 .setErrResId(errorResId)
                 .setRoundCornerRadius(cornerRadius, cornerType)
                 .setBooleanFit(true)
+                .setBooleanUpdateImg(updateImg)
                 .setBooleanCenterCrop(true)
                 .setBooleanCache(cache)
                 .addTransformation(transformations)
-                .setOnLoadCallBack(onLoadCallBack == null ? null: onLoadCallBack.getCallback())
+                .setOnLoadCallBack(onLoadCallBack == null ? null : onLoadCallBack.getCallback())
                 .build();
     }
 
@@ -195,12 +214,13 @@ public class ImageLoaderUtils {
      * @param transformations
      */
     public static void loadImage(String url, Target target, boolean cache, int cornerRadius, ImageLoader.CornerType cornerType,
-                                 Transformation... transformations) {
+                                 boolean updateImg, Transformation... transformations) {
         new ImageLoader.Builder(imagePicasso, url, target.getTarget())
                 .setBooleanIndicatorsEnabled(isDebug)
                 .setBooleanLoggingEnabled(isDebug)
                 .setRoundCornerRadius(cornerRadius, cornerType)
                 .setBooleanCache(cache)
+                .setBooleanUpdateImg(updateImg)
                 .addTransformation(transformations)
                 .build();
     }

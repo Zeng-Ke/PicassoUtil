@@ -101,6 +101,8 @@ public class ImageLoader {
 
         private boolean booleanCircle = false;
 
+        private boolean booleanUpdateImg = false;
+
 
         public Builder(Context context, String url, ImageView imageView) {
             this.context = context;
@@ -281,6 +283,8 @@ public class ImageLoader {
          */
         public Builder setBooleanCache(boolean booleanCache) {
             this.booleanCache = booleanCache;
+            if (booleanUpdateImg)
+                this.booleanCache = false;
             return this;
         }
 
@@ -292,6 +296,16 @@ public class ImageLoader {
             return this;
         }
 
+        /**
+         * 是否获取最新当前url图片。(会跳过读取缓存的图片，去拉取网络的图片，并且对网络获取的图片进行缓存)
+         */
+        public Builder setBooleanUpdateImg(boolean booleanUpdateImg) {
+            this.booleanUpdateImg = booleanUpdateImg;
+            if (booleanUpdateImg)
+                this.booleanCache = false;
+            return this;
+        }
+
         public ImageLoader build() {
             Picasso picasso = getPicasso();
             if (picasso == null) {
@@ -299,7 +313,7 @@ public class ImageLoader {
                 if (downloader == null)
                     downloader = new OkHttp3Downloader(createCacheDir(context, context.getApplicationInfo().packageName
                             .replace(".", "-") + "-imagecache"), MAX_DISK_CACHE_SIZE);
-                picasso =  builder.downloader(downloader).build();
+                picasso = builder.downloader(downloader).build();
             }
             picasso.setIndicatorsEnabled(booleanIndicatorsEnabled);
             picasso.setLoggingEnabled(booleanLoggingEnabled);
@@ -331,10 +345,13 @@ public class ImageLoader {
             if (booleanOnlyCache)
                 requestCreator.networkPolicy(NetworkPolicy.OFFLINE);
             else {
-                if (!booleanCache)
-                    requestCreator.memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)//跳过内存缓存
-                            .networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_STORE);//跳过磁盘缓存
-                else if (booleanBigImg)
+                if (!booleanCache) {
+                    if (booleanUpdateImg)
+                        requestCreator.memoryPolicy(MemoryPolicy.NO_CACHE)//跳过内存缓存(读，写)
+                                .networkPolicy(NetworkPolicy.NO_CACHE);//跳过磁盘缓存(读，写)
+                    else requestCreator.memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)//跳过内存缓存(读，写)
+                            .networkPolicy(NetworkPolicy.NO_CACHE, NetworkPolicy.NO_STORE);//跳过磁盘缓存(读，写)
+                } else if (booleanBigImg)
                     requestCreator.memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE);
             }
             if (imageView != null) {
