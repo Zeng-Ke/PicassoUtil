@@ -23,11 +23,11 @@ public class MainActivity extends AppCompatActivity {
         final ImageView imageView3 = findViewById(R.id.image3);
         final ImageView imageView4 = findViewById(R.id.image4);
 
-       // ImageLoaderUtils.invalidateImage("http://user.tgnet.com/User/Face/6485485?default=0&big=1");
+        // ImageLoaderUtils.invalidateImage("http://user.tgnet.com/User/Face/6485485?default=0&big=1");
 
         ImageLoaderUtils.loadNormalImage("http://img.pconline.com" +
-                ".cn/images/upload/upc/tx/wallpaper/1207/26/c1/12558965_1343293543277_320x480.jpg", imageView1,false);
-        mTarget = new ImageLoaderUtils.Target() {
+                ".cn/images/upload/upc/tx/wallpaper/1207/26/c1/12558965_1343293543277_320x480.jpg", imageView1, false);
+    /*    mTarget = new ImageLoaderUtils.Target() {
 
             @Override
             public void onBitmapLoaded(Bitmap bitmap, @ImageLoaderUtils.LoadedFrom int from) {
@@ -44,16 +44,31 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
-        ImageLoaderUtils.loadNormalImage("http://img.pconline.com" +
-                ".cn/images/upload/upc/tx/wallpaper/1207/26/c1/12558965_1343293543277_320x480.jpg", mTarget);
+        imageView2.getLayoutParams();*/
+    /*    ImageLoaderUtils.loadNormalImage("http://img.pconline.com" +
+                ".cn/images/upload/upc/tx/wallpaper/1207/26/c1/12558965_1343293543277_320x480.jpg", mTarget);*/
 
 
-        ImageLoaderUtils.loadCircleIcon("https://raw.githubusercontent" +
+/*        ImageLoaderUtils.getImgPicasso()
+                .load("http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1207/26/c1/12558965_1343293543277_320x480.jpg")
+                .centerInside()
+                .fit()
+                .into(imageView2);*/
+
+        Picasso.get()
+                .load("http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1207/26/c1/12558965_1343293543277_320x480.jpg")
+                .placeholder(R.mipmap.icon_pic_loding)
+                .into(imageView2);
+
+        //imageView2.setImageResource(R.mipmap.icon_pic_loding);
+
+
+      /*  ImageLoaderUtils.loadCircleIcon("https://raw.githubusercontent" +
                 ".com/aryarohit07/PicassoFaceDetectionTransformation/master/images/original_image3.jpg", imageView3);
 
 
         ImageLoaderUtils.updateNormalImage("https://raw.githubusercontent" +
-                ".com/aryarohit07/PicassoFaceDetectionTransformation/master/images/original_image3.jpg", imageView4);
+                ".com/aryarohit07/PicassoFaceDetectionTransformation/master/images/original_image3.jpg", imageView4);*/
     }
 
 

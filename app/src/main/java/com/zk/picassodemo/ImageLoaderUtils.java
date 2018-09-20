@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Callback;
@@ -160,6 +161,8 @@ public class ImageLoaderUtils {
 
     public static void loadIcon(String url, ImageView imageView, @DrawableRes int placeLoaderResId, @DrawableRes int errorResId, boolean
             cache, boolean circle, int radius, ImageLoader.CornerType cornerType, boolean updateImg) {
+        boolean booleanpecificSize = (imageView.getLayoutParams() == null || imageView.getLayoutParams().width == ViewGroup.LayoutParams
+                .WRAP_CONTENT || imageView.getLayoutParams().height == ViewGroup.LayoutParams.WRAP_CONTENT) ? false : true;
         new ImageLoader.Builder(iconPicasso, url, imageView)
                 .setBooleanIndicatorsEnabled(isDebug)
                 .setBooleanLoggingEnabled(isDebug)
@@ -169,8 +172,8 @@ public class ImageLoaderUtils {
                 .setPlaceloaderId(placeLoaderResId)
                 .setErrResId(errorResId)
                 .setBooleanUpdateImg(updateImg)
-                .setBooleanFit(true)
-                .setBooleanCenterCrop(true)
+                .setBooleanFit(booleanpecificSize ? true : false)
+                .setBooleanCenterCrop(booleanpecificSize ? true : false)
                 .build();
     }
 
@@ -188,6 +191,8 @@ public class ImageLoaderUtils {
     public static void loadImage(String url, ImageView imageView, @DrawableRes int placeLoaderResId, @DrawableRes int errorResId,
                                  boolean cache, int cornerRadius, ImageLoader.CornerType cornerType, boolean updateImg, LoadCallBack
                                          onLoadCallBack, Transformation... transformations) {
+        boolean booleanpecificSize = (imageView.getLayoutParams() == null || imageView.getLayoutParams().width == ViewGroup.LayoutParams
+                .WRAP_CONTENT || imageView.getLayoutParams().height == ViewGroup.LayoutParams.WRAP_CONTENT) ? false : true;
         new ImageLoader.Builder(imagePicasso, url, imageView)
                 .setBooleanIndicatorsEnabled(isDebug)
                 .setBooleanLoggingEnabled(isDebug)
@@ -195,9 +200,9 @@ public class ImageLoaderUtils {
                 .setPlaceloaderId(placeLoaderResId)
                 .setErrResId(errorResId)
                 .setRoundCornerRadius(cornerRadius, cornerType)
-                .setBooleanFit(true)
                 .setBooleanUpdateImg(updateImg)
-                .setBooleanCenterCrop(true)
+                .setBooleanFit(booleanpecificSize ? true : false)
+                .setBooleanCenterCrop(booleanpecificSize ? true : false)
                 .setBooleanCache(cache)
                 .addTransformation(transformations)
                 .setOnLoadCallBack(onLoadCallBack == null ? null : onLoadCallBack.getCallback())
